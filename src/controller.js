@@ -5,7 +5,9 @@ export const directStream = async (req, res) => {
     const { videoId } = req.query;
   // console.log(videoId);
   
-  
+
+
+    
     const stream = ytdl(videoId, {
       filter: "audioonly",
       quality: "highestaudio",
@@ -24,5 +26,14 @@ export const directStream = async (req, res) => {
       // console.log(info.player_response.videoDetails.videoId);
       stream.pipe(res);
     });
+
+    stream.on("error", (error) => {
+      console.error("Error message: ", error.message);
+      res.status(500).send({"err" : error.message});
+    })
+
+ 
+  
+   
   };
   

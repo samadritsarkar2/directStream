@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 app.get("/directStream", directStream);
 
 
-app.get("/directStream2", directStream);
+// app.get("/directStream2", directStream);
 
 app.listen(port, ()=> {
     console.log("Express app listening on port: " + `${port}`);
