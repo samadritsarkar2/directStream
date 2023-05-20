@@ -1,5 +1,14 @@
 import ytdl from "ytdl-core";
 
+const getDateTime = () => {
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var dateTime = date+' '+time;
+
+return dateTime;
+
+}
 
 export const directStream = async (req, res) => {
     const { videoId } = req.query;
@@ -15,7 +24,7 @@ export const directStream = async (req, res) => {
   
     stream.on("info", (info, format) => {
       res.setHeader("Content-Type", "audio/webm");
-      console.log("Title & videoId:- ", info.videoDetails.title + " " + info.videoDetails.videoId);
+      console.log("Title & videoId:- ", info.videoDetails.title + " " + info.videoDetails.videoId + " | " + getDateTime());
   
   
       // console.log("format:- ", format);
@@ -28,7 +37,7 @@ export const directStream = async (req, res) => {
     });
 
     stream.on("error", (error) => {
-      console.error("Error message: ", error.message);
+      console.error("Error message: ", error.message + " | " + getDateTime());
       res.status(500).send({"err" : error.message});
     })
 
