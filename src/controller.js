@@ -12,7 +12,7 @@ return dateTime;
 
 export const directStream = async (req, res) => {
     const { videoId } = req.query;
-  // console.log(videoId);
+  console.log(videoId);
   
 
 
@@ -24,6 +24,7 @@ export const directStream = async (req, res) => {
   
     stream.on("info", (info, format) => {
       res.setHeader("Content-Type", "audio/webm");
+      // console.log(info); 
       console.log("Title & videoId:- ", info.videoDetails.title + " " + info.videoDetails.videoId + " | " + getDateTime());
   
   
