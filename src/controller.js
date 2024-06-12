@@ -56,26 +56,22 @@ export const checkHealth = async (req, res) => {
   if (req.query.videoId) {
     const videoId = req.query.videoId;
     const metaData = await ytdl.getBasicInfo(videoId);
-   
-
 
     if (metaData.videoDetails.videoId === videoId) {
       res.status(200).json({
-        "success" : true,
+        success: true,
         msg: "Working",
-        data: metaData.videoDetails.title ,
+        data: metaData.videoDetails.title,
         currentTime: getDateTime(),
       });
       return;
     } else {
-      res
-        .status(500)
-        .send({
-          "success" : false,
-          msg: "Response videoId not same as request",
-          data: metaData.videoDetails.title,
-          currentTime: getDateTime(),
-        });
+      res.status(500).send({
+        success: false,
+        msg: "Response videoId not same as request",
+        data: metaData.videoDetails.title,
+        currentTime: getDateTime(),
+      });
       return;
     }
   }
@@ -87,4 +83,46 @@ export const checkHealth = async (req, res) => {
   });
 
   return;
+};
+
+export const checkHealthV2 = async (req, res) => {
+  try {
+    const { videoId } = req.query;
+    const stream = ytdl(videoId, {
+      filter: "audioonly",
+      quality: "highestaudio",
+    });
+
+    stream.on("info", (info, format) => {
+      if (info.videoDetails.videoId !== videoId) {
+        console.error("Blocked Error??", info);
+        return res.status(500).send({
+          success: false,
+          msg: "Response videoId not same as request",
+          data: info.videoDetails,
+          currentTime: getDateTime(),
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          msg: "Working",
+          data: info.videoDetails.title,
+          currentTime: getDateTime(),
+        });
+      }
+    });
+
+    stream.on("error", (error) => {
+      console.error("Error message: ", error.message + " | " + getDateTime());
+      return res.status(400).send({ err: error.message });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      success: false,
+      msg: "Something went wrong",
+      data: error.message,
+      currentTime: getDateTime(),
+    });
+  }
 };
