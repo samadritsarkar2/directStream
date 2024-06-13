@@ -4,7 +4,7 @@
       "name": "app",
       "script": "app.js",
       "autorestart": true,
-      "max_memory_restart": "300M",
+      "max_memory_restart": "800M",
       "instances": "max",
       "exec_mode": "cluster"
     }
