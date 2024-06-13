@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "name": "app",
+      "script": "app.js",
+      "autorestart": true,
+      "max_memory_restart": "300M",
+      "instances": "max",
+      "exec_mode": "cluster"
+    }
+  ]
+}
