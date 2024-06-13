@@ -50,6 +50,16 @@ export const directStream = async (req, res) => {
     res.status(500).send({ err: error.message });
     return;
   });
+
+  stream.on("close", () => {
+    console.log("Stream close event:--", getDateTime());
+    stream.destroy();
+  });
+
+  stream.on("end", () => {
+    console.log("Stream end event:--", getDateTime());
+    stream.destroy();
+  });
 };
 
 export const checkHealth = async (req, res) => {
@@ -96,14 +106,14 @@ export const checkHealthV2 = async (req, res) => {
     stream.on("info", (info, format) => {
       if (info.videoDetails.videoId !== videoId) {
         console.error("Blocked Error??", info);
-        return res.status(500).send({
+        res.status(500).send({
           success: false,
           msg: "Response videoId not same as request",
           data: info.videoDetails,
           currentTime: getDateTime(),
         });
       } else {
-        return res.status(200).json({
+        res.status(200).json({
           success: true,
           msg: "Working",
           data: info.videoDetails.title,
@@ -115,6 +125,16 @@ export const checkHealthV2 = async (req, res) => {
     stream.on("error", (error) => {
       console.error("Error message: ", error.message + " | " + getDateTime());
       return res.status(400).send({ err: error.message });
+    });
+
+    stream.on("close", () => {
+      console.log("Stream close event:--", getDateTime());
+      stream.destroy();
+    });
+
+    stream.on("end", () => {
+      console.log("Stream end event:--", getDateTime());
+      stream.destroy();
     });
   } catch (error) {
     console.error(error);
