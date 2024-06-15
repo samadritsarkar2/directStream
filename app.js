@@ -21,6 +21,9 @@ app.get("/", (req, res) => {
 
 app.get("/api/health", checkHealth);
 app.get("/api/v2/health", checkHealthV2);
+app.get("/api/test", (req, res) => {
+  return res.send("Hello Test");
+});
 
 app.get("/directStream", directStream);
 
