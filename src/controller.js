@@ -97,44 +97,53 @@ export const checkHealth = async (req, res) => {
 
 export const checkHealthV2 = async (req, res) => {
   try {
+    let isSuccess = false;
+    let videoInfo = null;
+
     const { videoId } = req.query;
+    if (!videoId) {
+      return res.status(500).send({ err: "videoId query param required" });
+    }
     const stream = ytdl(videoId, {
       filter: "audioonly",
       quality: "highestaudio",
     });
 
     stream.on("info", (info, format) => {
+      videoInfo = info;
       if (info.videoDetails.videoId !== videoId) {
         console.error("Blocked Error??", info);
-        res.status(500).send({
-          success: false,
-          msg: "Response videoId not same as request",
-          data: info.videoDetails,
-          currentTime: getDateTime(),
-        });
+        stream.emit("end");
       } else {
-        res.status(200).json({
-          success: true,
-          msg: "Working",
-          data: info.videoDetails.title,
-          currentTime: getDateTime(),
-        });
+        isSuccess = true;
+        stream.emit("end");
       }
     });
 
     stream.on("error", (error) => {
       console.error("Error message: ", error.message + " | " + getDateTime());
-      return res.status(400).send({ err: error.message });
-    });
-
-    stream.on("close", () => {
-      console.log("Stream close event:--", getDateTime());
       stream.destroy();
+      res.status(400).send({ err: error.message });
     });
 
     stream.on("end", () => {
-      console.log("Stream end event:--", getDateTime());
+      if (isSuccess) {
+        res.status(200).json({
+          success: true,
+          msg: "Working",
+          data: videoInfo.videoDetails.title,
+          currentTime: getDateTime(),
+        });
+      } else {
+        res.status(500).send({
+          success: false,
+          msg: "Response videoId not same as request",
+          data: videoInfo.videoDetails,
+          currentTime: getDateTime(),
+        });
+      }
       stream.destroy();
+      console.log("Health API v2 ends", getDateTime());
     });
   } catch (error) {
     console.error(error);
