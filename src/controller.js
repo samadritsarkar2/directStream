@@ -1,4 +1,5 @@
 import ytdl from "ytdl-core";
+import { getIPV6Address } from "./utils";
 
 const getDateTime = () => {
   var today = new Date();
