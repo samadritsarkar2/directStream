@@ -55,6 +55,8 @@ export const directStream = async (req, res) => {
 };
 
 export const checkHealth = async (req, res) => {
+  const results = getIPV6Address();
+  console.log(results);
   res.status(200).json({
     msg: "API working fine!",
     data: {},
