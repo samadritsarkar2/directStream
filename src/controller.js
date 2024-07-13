@@ -1,4 +1,4 @@
-import ytdl from "ytdl-core";
+import ytdl from "@distube/ytdl-core";
 import { getIPV6Address } from "./utils.js";
 
 const getDateTime = () => {
